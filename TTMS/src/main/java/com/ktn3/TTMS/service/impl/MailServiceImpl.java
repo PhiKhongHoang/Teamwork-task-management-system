@@ -7,6 +7,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
@@ -61,5 +63,17 @@ public class MailServiceImpl implements MailService {
 
         mailSender.send(message);
     }
+
+    public void sendDeadlineReminder(String email, String taskTitle, LocalDate deadline) {
+        String subject = "Nhắc nhở deadline task: " + taskTitle;
+        String content = "Bạn có một task sắp đến hạn vào ngày: " + deadline +
+                "\nVui lòng kiểm tra và hoàn thành đúng hạn!";
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(subject);
+        message.setText(content);
+        mailSender.send(message);
+    }
+
 
 }

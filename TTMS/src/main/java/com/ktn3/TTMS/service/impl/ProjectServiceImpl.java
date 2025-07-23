@@ -15,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -359,4 +361,21 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepo.delete(project);
         return ResCommonApi.success(null, "Đã xoá project!");
     }
+
+    /**
+     * Xem danh sách project tham gia (theo user)
+     */
+    public ResCommonApi<?> findProjectsByUser(User user) {
+        if (user == null) {
+            return ResCommonApi.error("User không hợp lệ!", 400);
+        }
+        List<ProjectMember> list = projectMemberRepo.findByUser(user);
+        List<Project> projects = list.stream()
+                .map(ProjectMember::getProject)
+                .collect(Collectors.toList());
+
+        return ResCommonApi.success(projects, "Lấy danh sách project thành công!");
+    }
+
+
 }
